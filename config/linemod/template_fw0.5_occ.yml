@@ -1,0 +1,179 @@
+vars:
+  input_h: &input_h
+    320 
+  input_w: &input_w
+    320 
+  batch_size: &batch_size
+    1
+  descriptor_dim: &descriptor_dim
+    32 
+  correspondence_radius_threshold: &correspondence_radius_threshold
+    0.01 #0.04 
+  seq_name: &seq_name
+    ["SEQ_NAME"]
+BASIC:
+  zoom_crop_size: [240,240]
+model:
+  input_h: *input_h
+  input_w: *input_w
+  batch_size: *batch_size
+  seq_len: 2 
+
+
+  network_class_name: RNNPose 
+  descriptor_net:
+    module_class_name: HybridFeaNet 
+    
+    keypoints_detector_2d:
+      input_dim: 3
+      descriptor_dim: *descriptor_dim 
+      remove_borders: 4
+      normalize_output: True 
+
+    keypoints_detector_3d:
+      #KPCONV configurations
+      num_layers: 4
+      KP_extent: 2.0
+      batch_norm_momentum: 0.02
+      use_batch_norm: true
+      in_points_dim: 3
+      fixed_kernel_points: 'center' #['center', 'verticals', 'none']
+      KP_influence: 'linear'
+      aggregation_mode: 'sum' #['closest', 'sum']
+      modulated: false 
+      first_subsampling_dl:  0.025
+      conv_radius: 2.5
+      deform_radius: 5
+      in_features_dim: 1 #3
+      first_feats_dim: 128
+      num_kernel_points: 15
+      final_feats_dim: *descriptor_dim #256 #32
+      normalize_output: True 
+      gnn_feats_dim: 128 #256
+    context_fea_extractor_3d:
+      #KPCONV configurations
+      num_layers: 4
+      KP_extent: 2.0
+      batch_norm_momentum: 0.02
+      use_batch_norm: true
+      in_points_dim: 3
+      fixed_kernel_points: 'center' #['center', 'verticals', 'none']
+      KP_influence: 'linear'
+      aggregation_mode: 'sum' #['closest', 'sum']
+      modulated: false 
+      first_subsampling_dl:  0.025
+      conv_radius: 2.5
+      deform_radius: 5
+      in_features_dim: 1 #3
+      first_feats_dim: 128
+      num_kernel_points: 15
+      final_feats_dim: 256 #*descriptor_dim #256 #32
+      normalize_output: False 
+      gnn_feats_dim: 128 #256
+  motion_net:
+    IS_CALIBRATED: True
+    RESCALE_IMAGES: False
+    ITER_COUNT: 4 
+    RENDER_ITER_COUNT: 3 #2 #1 #3
+    TRAIN_RESIDUAL_WEIGHT: 0 #0.1 
+    TRAIN_FLOW_WEIGHT: 0.5 #0.1 #1 
+    TRAIN_REPROJ_WEIGHT: 0 
+    OPTIM_ITER_COUNT: 1
+    FLOW_NET: 'raft' 
+    SYN_OBSERVED: False
+    ONLINE_CROP: True
+    raft:
+      small: False #True
+      fea_net: "default"
+      mixed_precision: True
+      # pretrained_model: "/mnt/workspace/datasets/weights/models/raft-small.pth"
+      pretrained_model: "/mnt/workspace/datasets/weights/models/raft-chairs.pth"
+      input_dim: 3 
+      iters: 1 
+      
+  loss:
+    metric_loss:
+      type: "normal" 
+      pos_radius: *correspondence_radius_threshold # the radius used to find the positive correspondences
+      safe_radius: 0.02 #0.13
+      pos_margin: 0.1
+      neg_margin: 1.4
+      max_points: 256
+      matchability_radius: 0.06
+      weight: 0.001
+    saliency_loss:
+      loss_weight: 1
+      reg_weight: 0.01
+    geometric_loss:
+      loss_weight: 1
+      reg_weight: 0.5 #0.1 
+
+
+train_config:
+
+  optimizer: 
+      adam_optimizer: 
+        learning_rate: 
+          one_cycle: 
+            lr_maxs: []
+            lr_max: 0.0001 # 
+            moms: [0.95, 0.85]
+            div_factor: 10.0
+            pct_start: 0.01 #0.05
+        amsgrad: false
+        weight_decay: 0.0001 
+      fixed_weight_decay: true
+      use_moving_average: false
+
+  steps: 200000 
+  steps_per_eval:  10000
+  loss_scale_factor: -1
+  clear_metrics_every_epoch: true
+
+train_input_reader:
+  dataset:
+    dataset_class_name: "LinemodDeepIMSynRealV2" 
+    info_path: ["/home/RNNPose/Projects/Works/RNNPose_release/EXPDATA/data_info/deepim/linemod_orig_deepim.info.train",  "/home/RNNPose/Projects/Works/RNNPose_release/EXPDATA/data_info/deepim/linemod_syn_deepim.info.train", 
+        "/home/RNNPose/Projects/Works/RNNPose_release/EXPDATA/data_info/linemod_fusesformatted_all10k_deepim.info.train",
+    ] 
+    root_path: ["/home/RNNPose/Projects/Works/RNNPose_release/EXPDATA/LM6d_converted/LM6d_refine",  "/home/RNNPose/Projects/Works/RNNPose_release/EXPDATA/LM6d_converted/LM6d_refine_syn",
+     "/home/RNNPose/Projects/Works/RNNPose_release/EXPDATA/LINEMOD/fuse_formatted/"
+     ]
+
+    model_point_dim: 3
+    max_points: 20000
+    seq_names: *seq_name 
+
+  batch_size: *batch_size 
+  preprocess: 
+    correspondence_radius_threshold: *correspondence_radius_threshold
+    num_workers: 3 
+    image_scale: 1
+    crop_param:
+      rand_crop: false
+      margin_ratio: 0.85 
+      output_size: *input_h 
+      crop_with_init_pose: True
+    
+
+eval_input_reader:
+  dataset:
+    dataset_class_name: "LinemodDeepIMSynRealV2"
+    info_path:  ["/home/RNNPose/Projects/Works/RNNPose_release/EXPDATA/data_info/deepim/linemod_bop_lmocc_pvnetdr.info.eval"]
+    root_path:  ["/home/RNNPose/Projects/Works/RNNPose_release/EXPDATA/lmo"] 
+    init_post_type: "PVNET_LINEMOD_OCC"
+    model_point_dim: 3
+    max_points: 20000
+    seq_names: *seq_name 
+  batch_size: *batch_size 
+  preprocess:
+    correspondence_radius_threshold: *correspondence_radius_threshold
+    num_workers: 3 
+    image_scale: 1
+    crop_param:
+      rand_crop: false
+      margin_ratio: 0.85 #0.5 
+      output_size: *input_h #
+      crop_with_init_pose: True
+      
+      
