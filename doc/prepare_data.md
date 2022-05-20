@@ -1,4 +1,6 @@
 # Data Preparation Tips
+All the related data for data preparation can be downloaded [here](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155139432_link_cuhk_edu_hk/EoXnZ96Tuy9PpYlZCvDN8vUBPdP1lP-PWQWiZH2KtIQoaQ?e=lpE472). You could download them first and then follow the instructions below for data preparation. 
+
 
 
 ## Download Datasets 
