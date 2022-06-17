@@ -1,8 +1,13 @@
 FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
 
+RUN apt-key del 7fa2af80
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN rm /etc/apt/sources.list.d/cuda.list
+RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+
 # Dependencies for glvnd and X11.
-RUN apt-get update \
-  && apt-get install -y -qq --no-install-recommends \
+RUN apt-get update 
+RUN  apt-get install -y -qq --no-install-recommends \
     libglvnd0 \
     libgl1 \
     libglx0 \
