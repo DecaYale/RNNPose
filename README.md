@@ -1,6 +1,6 @@
 # RNNPose: Recurrent 6-DoF Object Pose Refinement with Robust Correspondence Field Estimation and Pose Optimization
 
-Yan Xu, Junyi Lin, Guofeng Zhang, Xiaogang Wang, Hongsheng Li. 
+[Yan Xu](https://decayale.github.io/), [Kwan-Yee Lin](https://kwanyeelin.github.io/), [Guofeng Zhang](http://www.cad.zju.edu.cn/home/gfzhang/), [Xiaogang Wang](https://www.ee.cuhk.edu.hk/en-gb/people/academic-staff/professors/prof-xiaogang-wang), [Hongsheng Li](http://www.ee.cuhk.edu.hk/~hsli/). 
 
 *Conference on Computer Vision and Pattern Recognition (CVPR), 2022.*
 
