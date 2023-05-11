@@ -11,7 +11,8 @@ First, the following dataset need to be downloaded and extracted to the folder *
 [LINEMOD_OCC_TEST](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155139432_link_cuhk_edu_hk/EUKcRnwyy9RGu2ASwA3QDXsBnMRrFP-U4X4Eqq-g_MhmIQ?e=hv6H2s)
 
 ## Synthetic Data Generation
-The preprocessed data following [DeepIM](https://github.com/liyi14/mx-DeepIM) and [PVNet](https://github.com/zju3dv/pvnet-rendering) can be downloaded from [LM6d_converted](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155139432_link_cuhk_edu_hk/EYFaYrk0kcdBgC6WMtLJqP0B9Ar0_Nff9qhI2Cs95qDbdA?e=yYxexC) and [raw_data](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155139432_link_cuhk_edu_hk/ESSFXi_7qs1AgNmty7_9y4AB8ffFsGJWOC3ikgD5BIeXHQ?e=qOmvds). 
+
+The preprocessed data following [DeepIM](https://github.com/liyi14/mx-DeepIM) and [PVNet](https://github.com/zju3dv/pvnet-rendering) can be downloaded from [LM6d_converted](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155139432_link_cuhk_edu_hk/EYFaYrk0kcdBgC6WMtLJqP0B9Ar0_Nff9qhI2Cs95qDbdA) and [raw_data](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155139432_link_cuhk_edu_hk/ESSFXi_7qs1AgNmty7_9y4AB8ffFsGJWOC3ikgD5BIeXHQ?e=qOmvds). 
 After downloading, you should put the downloaded files into the folder *EXPDATA/* (lying in the repository's root directory). 
 To create occluded objects during training, we follow [PVNet](https://github.com/zju3dv/pvnet-rendering) to randomly create occlusions. 
 You could run the following scripts to transform the data format for our dataloader. 
