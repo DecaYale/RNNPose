@@ -129,6 +129,13 @@ If you find our code useful, please cite our paper.
   booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
   year={2022}
 }
+
+@article{xu2024rnnpose,
+  title={Rnnpose: 6-dof object pose estimation via recurrent correspondence field estimation and pose optimization},
+  author={Xu, Yan and Lin, Kwan-Yee and Zhang, Guofeng and Wang, Xiaogang and Li, Hongsheng},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year={2024},
+  publisher={IEEE}
 ```
 
 
